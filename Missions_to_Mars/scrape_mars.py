@@ -1,7 +1,7 @@
 from splinter import Browser
-from bs4 import BeautifulSoup as bs
-import requests
-import pandas as pd 
+from bs4 import BeautifulSoup as soup
+# import requests
+# import pandas as pd 
 
 def init_browser():
 
@@ -21,7 +21,10 @@ def scrape_mars_news():
         url = 'https://mars.nasa.gov/news/8744/nasa-engineers-checking-insights-weather-sensors/'
         browser.visit(url)
 
-        soup = BeautifulSoup(response.text, 'lxml')
+        #soup = bs.text, 'lxml'
+        # Convert the browser html to a soup object and then quit the browser
+        html = browser.html
+        soup(html, 'html.parser')
         news_title = soup.title.text
         news_p = soup.find_all('p')[1].text
 
@@ -46,7 +49,7 @@ def scrape_mars_image():
         html_image = browser.html
 
         # Parse HTML with Beautiful Soup
-        soup = BeautifulSoup(html_image, 'html.parser')
+        soup(html_image, 'html.parser')
 
         # Retrieve background-image url from style tag 
         featured_image_url  = soup.find('article')['style'].replace('background-image: url(','').replace(');', '')[1:-1]
@@ -78,7 +81,7 @@ def scrape_mars_facts():
         browser.visit(space_facts_url)
 
         space_facts_url = browser.html
-        soup = BeautifulSoup(space_facts_url, 'html.parser')
+        soup(space_facts_url, 'html.parser')
         tables = pd.read_html(space_facts_url)
         
         space_facts_df = tables[0]
@@ -95,11 +98,12 @@ def scrape_mars_facts():
         # Dictionary entry from MARS FACTS
         mars_info['mars_facts'] = html_table
 
-        return mars_info
+    except BaseException:
+        return None    
 
-#Mars Hemispheres
-
-def scrape_mars_hemisphere():
+    return mars_info
+        
+def scrape_mars_hemispheres():
     try:
 
         browser = init_browser()
@@ -109,7 +113,7 @@ def scrape_mars_hemisphere():
 
         # Parse HTML with Beautiful Soup
         hemisphere_url = browser.html
-        soup = BeautifulSoup(hemisphere_url, 'html.parser')
+        soup(hemisphere_url, 'html.parser')
 
         # Retreive all items that contain mars hemispheres information
         items = soup.find_all('div', class_='item')
@@ -135,7 +139,7 @@ def scrape_mars_hemisphere():
             partial_img_html = browser.html
     
             # Parse HTML with Beautiful Soup for every individual hemisphere information website 
-            soup = BeautifulSoup( partial_img_html, 'html.parser')
+            soup(partial_img_html, 'html.parser')
     
             # Retrieve full image source 
             img_url = hemispheres_main_url + soup.find('img', class_='wide-image')['src']
@@ -143,13 +147,14 @@ def scrape_mars_hemisphere():
             # Append the retreived information into a list of dictionaries 
             hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
 
+            browser.back()
         
-         mars_info['hemisphere_image_urls'] = hemisphere_image_urls
+         #mars_info['hemisphere_image_urls'] = hemisphere_image_urls
 
-         return mars_info
+         #return mars_info
+        return hemisphere_image_urls
 
     finally:
-
         browser.quit()
 
 
