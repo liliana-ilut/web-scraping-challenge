@@ -70,7 +70,8 @@ def scrape_mars_image():
 
 #Mars Facts
 
-def scrape_mars_news():
+def scrape_mars_facts():
+
     try:
         browser= init_browser()
         space_facts_url= 'https://space-facts.com/mars/'
@@ -113,39 +114,40 @@ def scrape_mars_hemispheres():
         # Retreive all items that contain mars hemispheres information
         items = soup.find_all('div', class_='item')
 
-# Create empty list for hemisphere urls 
+        # Create empty list for hemisphere urls 
         hemisphere_image_urls = []
 
-# Store the main_ul 
+        # Store the main_ul 
         hemispheres_main_url = 'https://astrogeology.usgs.gov'
 
-# Loop through the items previously stored
+        # Loop through the items previously stored
         for i in items: 
-    # Store title
+            # Store title
             title = i.find('h3').text
     
-    # Store link that leads to full image website
+            # Store link that leads to full image website
             partial_img_url = i.find('a', class_='itemLink product-item')['href']
     
-    # Visit the link that contains the full image website 
+            # Visit the link that contains the full image website 
             browser.visit(hemispheres_main_url + partial_img_url)
     
-    # HTML Object of individual hemisphere information website 
+            # HTML Object of individual hemisphere information website 
             partial_img_html = browser.html
     
-    # Parse HTML with Beautiful Soup for every individual hemisphere information website 
+            # Parse HTML with Beautiful Soup for every individual hemisphere information website 
             soup = BeautifulSoup( partial_img_html, 'html.parser')
     
-    # Retrieve full image source 
+            # Retrieve full image source 
             img_url = hemispheres_main_url + soup.find('img', class_='wide-image')['src']
     
-    # Append the retreived information into a list of dictionaries 
+            # Append the retreived information into a list of dictionaries 
             hemisphere_image_urls.append({"title" : title, "img_url" : img_url})
 
         
-        mars_info['hemisphere_image_urls'] = hemisphere_image_urls
+         mars_info['hemisphere_image_urls'] = hemisphere_image_urls
 
-        return mars_info
+         return mars_info
+
     finally:
 
         browser.quit()
