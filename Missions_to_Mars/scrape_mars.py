@@ -99,7 +99,7 @@ def scrape_mars_facts():
 
 #Mars Hemispheres
 
-def scrape_mars_hemispheres():
+def scrape_mars_hemisphere():
     try:
 
         browser = init_browser()
