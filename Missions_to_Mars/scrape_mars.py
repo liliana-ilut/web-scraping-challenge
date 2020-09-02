@@ -51,7 +51,6 @@ def scrape_mars_image():
         # Parse HTML with Beautiful Soup
         soup(html_image, 'html.parser')
 
-        # Retrieve background-image url from style tag 
         featured_image_url  = soup.find('article')['style'].replace('background-image: url(','').replace(');', '')[1:-1]
 
         # Website Url 
@@ -126,16 +125,11 @@ def scrape_mars_hemispheres():
 
         # Loop through the items previously stored
         for i in items: 
-            # Store title
+          
             title = i.find('h3').text
-    
-            # Store link that leads to full image website
-            partial_img_url = i.find('a', class_='itemLink product-item')['href']
-    
-            # Visit the link that contains the full image website 
+            partial_img_url = i.find('a', class_='itemLink product-item')['href'] 
             browser.visit(hemispheres_main_url + partial_img_url)
     
-            # HTML Object of individual hemisphere information website 
             partial_img_html = browser.html
     
             # Parse HTML with Beautiful Soup for every individual hemisphere information website 
